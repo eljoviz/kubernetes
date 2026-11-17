@@ -1,111 +1,132 @@
-# 2. Instalación del Entorno de Laboratorio
+# 2. Instalación de Minikube y `kubectl`
 
-Para aprender y practicar con Kubernetes en entornos locales de desarrollo, no es necesario alquilar servidores en la nube. Se utilizan herramientas que empaquetan un clúster de Kubernetes en una máquina local (Debian / Ubuntu).
-
----
-
-## 2.1 Herramientas Disponibles
-
-* **Minikube:** La herramienta oficial recomendada por la comunidad para aprendizaje y desarrollo local. Crea un clúster de un solo nodo dentro de Docker o KVM.
-* **`kubectl`:** La interfaz oficial de línea de comandos (CLI) para interactuar y controlar cualquier clúster de Kubernetes.
-* **K3s:** Distribución ligera certificada por la CNCF creada por Rancher, óptima para entornos de producción en servidores modestos o Raspberry Pi.
-
-En esta guía utilizaremos el tándem estándar de la industria para formación: **`kubectl` + Minikube**.
+Guía paso a paso de la instalación y puesta en marcha de un clúster local de Kubernetes (**Minikube** v1.39.0 sobre **VirtualBox** con Kubernetes v1.37.0 y **kubectl** v1.37.2) en Ubuntu.
 
 ---
 
-## 2.2 Requisitos Previos
+## 1. Instalación y arranque de Minikube
 
-Antes de comenzar, asegúrate de tener en tu equipo Linux:
-* Al menos 2 CPUs (núcleos).
-* 2 GB de memoria RAM libre (recomendado 4 GB).
-* 20 GB de espacio en disco.
-* Conexión a Internet.
-* **Docker Engine** instalado y tu usuario añadido al grupo `docker`:
-  ```bash
-  sudo usermod -aG docker $USER && newgrp docker
-  ```
-
----
-
-## 2.3 Paso 1: Instalación de `kubectl`
-
-`kubectl` descarga y envía los manifiestos YAML al `kube-apiserver`.
+### Paso 1: Descargar el binario de Minikube
+Descargamos la última versión oficial compilada para arquitectura `amd64`:
 
 ```bash
-# 1. Descargar el binario oficial compilado para arquitectura amd64
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-
-# 2. Dar permisos de ejecución al binario
-chmod +x kubectl
-
-# 3. Moverlo al directorio de ejecutables del sistema
-sudo mv kubectl /usr/local/bin/
-
-# 4. Verificar la versión instalada
-kubectl version --client --output=yaml
+curl -LO https://github.com/kubernetes/minikube/releases/latest/download/minikube-linux-amd64
 ```
 
-> [!TIP] Autocompletado en Bash
-> Para activar el autocompletado de comandos con la tecla Tabulador:
-> ```bash
-> echo 'source <(kubectl completion bash)' >> ~/.bashrc
-> source ~/.bashrc
-> ```
+![Descarga de Minikube](../img/instalacion/01-descarga-minikube.png)
 
----
-
-## 2.4 Paso 2: Instalación de Minikube
+### Paso 2: Instalar el binario en el sistema
+Instalamos el ejecutable en `/usr/local/bin/minikube` para poder invocarlo desde cualquier ruta:
 
 ```bash
-# 1. Descargar el paquete deb oficial de Minikube
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb
-
-# 2. Instalar el paquete en Debian/Ubuntu
-sudo dpkg -i minikube_latest_amd64.deb
-
-# 3. Eliminar el instalador temporal
-rm minikube_latest_amd64.deb
-
-# 4. Iniciar Minikube indicando Docker como controlador
-minikube start --driver=docker --cpus=2 --memory=3072
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
 ```
 
----
+![Instalación de Minikube](../img/instalacion/02-instalar-minikube.png)
 
-## 2.5 Paso 3: Verificación y Estado del Clúster
-
-Una vez finalizado el arranque, comprobamos que el clúster está listo:
+### Paso 3: Comprobar la versión instalada
+Verificamos que `minikube` responde correctamente (`v1.39.0`):
 
 ```bash
-# Comprobar la información del plano de control
-kubectl cluster-info
-
-# Ver el estado de los nodos del clúster (debe aparecer en estado 'Ready')
-kubectl get nodes -o wide
-
-# Salida esperada:
-# NAME       STATUS   ROLES           AGE   VERSION   INTERNAL-IP   OS-IMAGE             KERNEL-VERSION
-# minikube   Ready    control-plane   2m    v1.30.0   192.168.49.2  Ubuntu 22.04.4 LTS   ...
+minikube version
 ```
 
-### Comandos útiles de gestión de Minikube:
+![Versión de Minikube](../img/instalacion/03-version-minikube.png)
+
+### Paso 4: Iniciar el clúster (`minikube start`)
+Arrancamos el clúster. Minikube selecciona automáticamente el controlador **VirtualBox**, descarga la ISO y prepara Kubernetes `v1.37.0` sobre `containerd`:
+
 ```bash
-# Ver estado del clúster
-minikube status
-
-# Detener el clúster (para ahorrar batería/memoria)
-minikube stop
-
-# Volver a arrancar el clúster existente
 minikube start
-
-# Abrir el panel de control gráfico web (Dashboard)
-minikube dashboard
-
-# Eliminar completamente el clúster de pruebas
-minikube delete
 ```
+
+![Arranque de Minikube](../img/instalacion/04-minikube-start.png)
+
+### Paso 5: Verificar el estado y perfil del clúster
+Comprobamos que el plano de control (`host`, `kubelet` y `apiserver`) está en ejecución (`Running`) y `kubeconfig` configurado:
+
+```bash
+minikube status
+```
+
+![Estado de Minikube](../img/instalacion/05-minikube-status.png)
+
+Listamos el perfil activo para verificar su IP (`192.168.59.100`), driver (`virtualbox`) y runtime (`containerd`):
+
+```bash
+minikube profile list
+```
+
+![Perfil de Minikube](../img/instalacion/06-minikube-profile.png)
+
+---
+
+## 2. Instalación y verificación de `kubectl`
+
+### Paso 6: Descargar el binario de `kubectl`
+Descargamos la última versión estable de la CLI oficial de Kubernetes:
+
+```bash
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+```
+
+![Descarga de kubectl](../img/instalacion/07-descarga-kubectl.png)
+
+### Paso 7: Instalar `kubectl` y comprobar versiones
+Instalamos el binario con permisos de ejecución y verificamos la versión tanto del cliente (`v1.37.2`) como del servidor (`v1.37.0`):
+
+```bash
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version
+```
+
+![Instalación y versión de kubectl](../img/instalacion/08-instalar-kubectl-version.png)
+
+### Paso 8: Comprobar el nodo del clúster
+Verificamos que el nodo `minikube` aparece en estado **`Ready`** con rol `control-plane`:
+
+```bash
+kubectl get nodes -o wide
+```
+
+![Listado de nodos](../img/instalacion/09-kubectl-get-nodes.png)
+
+---
+
+## 3. Activación del autocompletado de comandos
+
+### Paso 9: Instalar `bash-completion`
+Nos aseguramos de tener instalado el paquete de autocompletado en Ubuntu:
+
+```bash
+sudo apt install -y bash-completion
+```
+
+![Instalación de bash-completion](../img/instalacion/10-apt-bash-completion.png)
+
+### Paso 10: Añadir autocompletado de `kubectl` y `minikube` a `~/.bashrc`
+Agregamos las instrucciones de autocompletado al fichero de configuración de Bash para que queden permanentes:
+
+```bash
+echo 'source <(kubectl completion bash)' >> ~/.bashrc
+echo 'source <(minikube completion bash)' >> ~/.bashrc
+```
+
+![Añadir autocompletado a bashrc](../img/instalacion/11-bashrc-autocompletado.png)
+
+### Paso 11: Recargar la configuración de Bash
+Aplicamos los cambios en la sesión actual de terminal sin necesidad de cerrarla:
+
+```bash
+source ~/.bashrc
+```
+
+![Recargar bashrc](../img/instalacion/12-source-bashrc.png)
+
+### Paso 12: Probar el autocompletado
+Escribimos `minikube ` y pulsamos la tecla **Tabulador** dos veces para confirmar que sugiere todos los subcomandos disponibles:
+
+![Prueba de autocompletado](../img/instalacion/13-prueba-autocompletado.png)
 
 ---
 [⬅️ 1. Introducción](01-introduccion.md) | [Volver al Índice](../README.md) | [Siguiente: 3. Pods ➡️](03-pods.md)
