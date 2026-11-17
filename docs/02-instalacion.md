@@ -129,4 +129,26 @@ Escribimos `minikube ` y pulsamos la tecla **Tabulador** dos veces para confirma
 ![Prueba de autocompletado](../img/instalacion/13-prueba-autocompletado.png)
 
 ---
+
+## 4. Detener y eliminar el clúster Minikube
+
+### Paso 13: Detener el nodo de Minikube
+Si queremos apagar temporalmente el clúster sin perder su configuración para liberar recursos del sistema:
+
+```bash
+minikube stop
+```
+
+![Detener Minikube](../img/instalacion/14-minikube-stop.png)
+
+### Paso 14: Eliminar el clúster por completo
+Para borrar la máquina virtual de VirtualBox y eliminar cualquier rastro de los perfiles de Minikube (por ejemplo, antes de cambiar de driver a Docker):
+
+```bash
+minikube delete --all
+```
+
+![Eliminar Minikube](../img/instalacion/15-minikube-delete.png)
+
+---
 [⬅️ 1. Introducción](01-introduccion.md) | [Volver al Índice](../README.md) | [Siguiente: 3. Pods ➡️](03-pods.md)
