@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="100%" height="100%" style="background-color: #0f172a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <defs>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <linearGradient id="cpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="wnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="k8sBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#326ce5"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="40" text-anchor="middle" fill="#ffffff" font-size="20" font-weight="bold" letter-spacing="1">ARQUITECTURA DE UN CLÚSTER KUBERNETES</text>
+  <text x="480" y="65" text-anchor="middle" fill="#94a3b8" font-size="12">Plano de Control (Master Node) y Nodos de Trabajo (Worker Nodes)</text>
+
+  <!-- Control Plane Box -->
+  <rect x="40" y="90" width="410" height="410" rx="12" fill="url(#cpGrad)" stroke="#326ce5" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="40" y="90" width="410" height="42" rx="12" fill="url(#k8sBlue)"/>
+  <text x="245" y="117" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">PLANO DE CONTROL (MASTER NODE)</text>
+
+  <!-- Control Plane Components -->
+  <!-- API Server -->
+  <rect x="70" y="150" width="350" height="60" rx="8" fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="245" y="177" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="bold">kube-apiserver</text>
+  <text x="245" y="196" text-anchor="middle" fill="#93c5fd" font-size="10.5">Punto de entrada REST API y cerebro del clúster</text>
+
+  <!-- etcd -->
+  <rect x="70" y="230" width="165" height="70" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="152" y="258" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">etcd</text>
+  <text x="152" y="278" text-anchor="middle" fill="#cbd5e1" font-size="10">Base de datos clave-valor</text>
+  <text x="152" y="292" text-anchor="middle" fill="#cbd5e1" font-size="9">(Estado del clúster)</text>
+
+  <!-- Controller Manager -->
+  <rect x="255" y="230" width="165" height="70" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="337" y="255" text-anchor="middle" fill="#ffffff" font-size="11.5" font-weight="bold">controller-manager</text>
+  <text x="337" y="275" text-anchor="middle" fill="#cbd5e1" font-size="9.5">Bucles de control</text>
+  <text x="337" y="290" text-anchor="middle" fill="#cbd5e1" font-size="9">(Replicas, Nodos, Endpoints)</text>
+
+  <!-- Scheduler -->
+  <rect x="70" y="320" width="350" height="55" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="245" y="345" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">kube-scheduler</text>
+  <text x="245" y="362" text-anchor="middle" fill="#cbd5e1" font-size="10">Asigna Pods nuevos a nodos según CPU y Memoria</text>
+
+  <!-- Admin / kubectl -->
+  <rect x="70" y="400" width="350" height="75" rx="8" fill="#0f172a" stroke="#22c55e" stroke-width="1.5"/>
+  <text x="245" y="425" text-anchor="middle" fill="#4ade80" font-size="12" font-weight="bold">Administrador / Desarrollador</text>
+  <text x="245" y="445" text-anchor="middle" fill="#ffffff" font-size="11">Terminal con CLI: <code>kubectl</code></text>
+  <text x="245" y="462" text-anchor="middle" fill="#94a3b8" font-size="9.5">Envía manifiestos YAML vía HTTPS al API Server</text>
+
+  <!-- Worker Node Box -->
+  <rect x="510" y="90" width="410" height="410" rx="12" fill="url(#wnGrad)" stroke="#10b981" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="510" y="90" width="410" height="42" rx="12" fill="#059669"/>
+  <text x="715" y="117" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">NODO DE TRABAJO (WORKER NODE)</text>
+
+  <!-- Worker Node Components -->
+  <!-- Kubelet & Kube-proxy -->
+  <rect x="540" y="150" width="165" height="60" rx="8" fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="622" y="177" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="bold">kubelet</text>
+  <text x="622" y="196" text-anchor="middle" fill="#93c5fd" font-size="10">Agente de nodo (CRI)</text>
+
+  <rect x="725" y="150" width="165" height="60" rx="8" fill="#1e3a8a" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="807" y="177" text-anchor="middle" fill="#ffffff" font-size="13" font-weight="bold">kube-proxy</text>
+  <text x="807" y="196" text-anchor="middle" fill="#93c5fd" font-size="10">Reglas iptables y red</text>
+
+  <!-- Container Runtime -->
+  <rect x="540" y="230" width="350" height="50" rx="8" fill="#334155" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="715" y="253" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="bold">Container Runtime (containerd / Docker)</text>
+  <text x="715" y="270" text-anchor="middle" fill="#cbd5e1" font-size="10">Descarga imágenes y ejecuta contenedores</text>
+
+  <!-- Pods Area -->
+  <rect x="540" y="300" width="350" height="175" rx="8" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="4"/>
+  <text x="715" y="322" text-anchor="middle" fill="#38bdf8" font-size="12" font-weight="bold">Espacio de Pods en Ejecución</text>
+
+  <!-- Pod 1 -->
+  <rect x="555" y="335" width="150" height="120" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="630" y="357" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="bold">Pod: Nginx Web</text>
+  <rect x="567" y="367" width="126" height="35" rx="4" fill="#0284c7"/>
+  <text x="630" y="388" text-anchor="middle" fill="#ffffff" font-size="9.5">Contenedor Nginx</text>
+  <text x="630" y="420" text-anchor="middle" fill="#94a3b8" font-size="9">IP única del Pod</text>
+  <text x="630" y="435" text-anchor="middle" fill="#94a3b8" font-size="8.5">Volumen compartido</text>
+
+  <!-- Pod 2 -->
+  <rect x="725" y="335" width="150" height="120" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="800" y="357" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="bold">Pod: App Backend</text>
+  <rect x="737" y="367" width="126" height="35" rx="4" fill="#7c3aed"/>
+  <text x="800" y="388" text-anchor="middle" fill="#ffffff" font-size="9.5">Contenedor Node/PHP</text>
+  <text x="800" y="420" text-anchor="middle" fill="#94a3b8" font-size="9">IP única del Pod</text>
+  <text x="800" y="435" text-anchor="middle" fill="#94a3b8" font-size="8.5">Volumen compartido</text>
+
+  <!-- Connection Line -->
+  <line x1="450" y1="180" x2="540" y2="180" stroke="#f59e0b" stroke-width="3" stroke-dasharray="6"/>
+  <text x="480" y="172" text-anchor="middle" fill="#f59e0b" font-size="10" font-weight="bold">CRI / HTTPS</text>
+</svg>
